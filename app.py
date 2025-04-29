@@ -8,7 +8,6 @@ app = Flask(__name__)
 MUSIC_DIR = "music"
 os.makedirs(MUSIC_DIR, exist_ok=True)
 
-# Хранение метаданных треков
 tracks_metadata = {}
 
 def update_metadata():
