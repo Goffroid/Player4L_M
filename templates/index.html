@@ -1,29 +1,67 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Telegram Music Player</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <style>
-        body { font-family: Arial; padding: 10px; }
-        #player { margin-top: 20px; }
-        #track-list { list-style: none; padding: 0; }
-        #track-list li { padding: 10px; border-bottom: 1px solid #eee; }
-        #progress-bar { width: 100%; margin: 10px 0; }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        #player-controls {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        #track-list {
+            list-style: none;
+            padding: 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        #track-list li {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        #track-list li:hover {
+            background-color: #f5f5f5;
+        }
+        #progress-bar {
+            width: 100%;
+            margin: 10px 0;
+        }
+        button {
+            padding: 8px 16px;
+            background: #0088cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <h1>🎵 Music Player</h1>
+    
     <div id="player">
         <audio id="audio" controls></audio>
-        <input type="range" id="progress-bar" value="0">
-        <div id="current-track">No track selected</div>
-        <button id="play-btn">Play</button>
+        <input type="range" id="progress-bar" min="0" max="100" value="0">
+        <div id="now-playing">No track selected</div>
     </div>
+
+    <div id="player-controls">
+        <button id="play-btn">▶️ Play</button>
+        <button id="upload-btn">📤 Upload</button>
+    </div>
+
     <ul id="track-list"></ul>
-    <input type="file" id="file-input" accept="audio/*">
-    <button id="upload-btn">Upload</button>
+    <input type="file" id="file-input" accept="audio/*" style="display: none;">
 
     <script src="/static/player.js"></script>
 </body>

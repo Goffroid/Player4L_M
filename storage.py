@@ -33,7 +33,8 @@ class MusicStorage:
                 "duration": audio.info.length,
                 "path": os.path.basename(file_path)
             }
-        except:
+        except Exception as e:
+            print(f"Error reading metadata: {e}")
             return {
                 "title": os.path.basename(file_path),
                 "artist": "Unknown",
@@ -43,3 +44,11 @@ class MusicStorage:
 
     def get_all_tracks(self):
         return list(self.metadata.values())
+
+    def search_tracks(self, query):
+        query = query.lower()
+        return [
+            track for track in self.metadata.values()
+            if query in track["title"].lower() or 
+               query in track["artist"].lower()
+        ]
