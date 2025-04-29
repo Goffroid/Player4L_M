@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Telegram Music Player</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: Arial; padding: 10px; }
+        #player { margin-top: 20px; }
+        #track-list { list-style: none; padding: 0; }
+        #track-list li { padding: 10px; border-bottom: 1px solid #eee; }
+        #progress-bar { width: 100%; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🎵 Music Player</h1>
+    <div id="player">
+        <audio id="audio" controls></audio>
+        <input type="range" id="progress-bar" value="0">
+        <div id="current-track">No track selected</div>
+        <button id="play-btn">Play</button>
+    </div>
+    <ul id="track-list"></ul>
+    <input type="file" id="file-input" accept="audio/*">
+    <button id="upload-btn">Upload</button>
+
+    <script src="/static/player.js"></script>
+</body>
+</html>

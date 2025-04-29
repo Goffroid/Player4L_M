@@ -1,25 +1,45 @@
 import os
-import shutil
-from tkinter import filedialog
+import json
+from mutagen.mp3 import MP3
 
 class MusicStorage:
-    def __init__(self, music_dir="music"):
+    def __init__(self, music_dir):
         self.music_dir = music_dir
-        if not os.path.exists(music_dir):
-            os.makedirs(music_dir)
+        self.metadata_file = os.path.join(music_dir, "metadata.json")
+        self.metadata = {}
+        self._init_storage()
 
-    def add_music(self):
-        file_paths = filedialog.askopenfilenames(
-            title="Выберите треки",
-            filetypes=[("Audio Files", "*.mp3 *.wav")]
-        )
-        for src_path in file_paths:
-            try:
-                dst_path = os.path.join(self.music_dir, os.path.basename(src_path))
-                shutil.copy2(src_path, dst_path)
-            except Exception as e:
-                print(f"Ошибка при копировании {src_path}: {e}")
+    def _init_storage(self):
+        os.makedirs(self.music_dir, exist_ok=True)
+        if os.path.exists(self.metadata_file):
+            with open(self.metadata_file, "r") as f:
+                self.metadata = json.load(f)
 
-    def get_tracks(self):
-        return [os.path.abspath(os.path.join(self.music_dir, f)) for f in os.listdir(self.music_dir) 
-                if f.endswith(('.mp3', '.wav'))]
+    def _save_metadata(self):
+        with open(self.metadata_file, "w") as f:
+            json.dump(self.metadata, f, indent=4)
+
+    def add_music(self, file_path):
+        metadata = self._get_metadata(file_path)
+        self.metadata[file_path] = metadata
+        self._save_metadata()
+
+    def _get_metadata(self, file_path):
+        try:
+            audio = MP3(file_path)
+            return {
+                "title": audio.get("TIT2", [os.path.basename(file_path)])[0],
+                "artist": audio.get("TPE1", ["Unknown"])[0],
+                "duration": audio.info.length,
+                "path": os.path.basename(file_path)
+            }
+        except:
+            return {
+                "title": os.path.basename(file_path),
+                "artist": "Unknown",
+                "duration": 0,
+                "path": os.path.basename(file_path)
+            }
+
+    def get_all_tracks(self):
+        return list(self.metadata.values())
