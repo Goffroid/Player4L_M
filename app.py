@@ -63,3 +63,9 @@ def play(filename):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+
+@app.route('/tracks')
+def get_tracks():
+    tracks = storage.get_all_tracks()
+    sorted_tracks = sorted(tracks, key=lambda x: x['title'])
+    return jsonify({"tracks": sorted_tracks})
