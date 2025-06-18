@@ -3,65 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Player</title>
+    <title>Spotify-like Player</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/static/spotify-icon.png" type="image/png">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
+        :root {
+            --spotify-black: #191414;
+            --spotify-green: #1DB954;
+            --spotify-white: #FFFFFF;
+            --spotify-light-gray: #B3B3B3;
+            --spotify-dark-gray: #535353;
         }
-        #player-controls {
+        
+        body {
+            font-family: 'Circular', Helvetica, Arial, sans-serif;
+            background-color: var(--spotify-black);
+            color: var(--spotify-white);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .player-header {
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .player-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--spotify-white);
+        }
+        
+        .now-playing {
+            background: linear-gradient(135deg, #2D2D2D 0%, #191414 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .album-art {
+            width: 200px;
+            height: 200px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+        
+        .track-info {
+            margin-bottom: 20px;
+        }
+        
+        .track-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .artist-name {
+            font-size: 14px;
+            color: var(--spotify-light-gray);
+        }
+        
+        .progress-container {
             margin: 20px 0;
         }
-        #track-list {
-            list-style: none;
-            padding: 0;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        #track-list li {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-        }
-        #track-list li:hover {
-            background-color: #f5f5f5;
-        }
-        #progress-bar {
+        
+        .progress-bar {
+            -webkit-appearance: none;
             width: 100%;
-            margin: 10px 0;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--spotify-dark-gray);
+            outline: none;
+            margin-bottom: 5px;
         }
-        button {
-            padding: 8px 16px;
-            background: #0088cc;
-            color: white;
-            border: none;
-            border-radius: 4px;
+        
+        .progress-bar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--spotify-white);
             cursor: pointer;
+        }
+        
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--spotify-light-gray);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .control-btn {
+            background: none;
+            border: none;
+            color: var(--spotify-white);
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .play-btn {
+            background-color: var(--spotify-green);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
+        }
+        
+        .track-list {
+            margin-top: 30px;
+        }
+        
+        .track-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--spotify-dark-gray);
+            cursor: pointer;
+        }
+        
+        .track-item:last-child {
+            border-bottom: none;
+        }
+        
+        .track-number {
+            width: 30px;
+            color: var(--spotify-light-gray);
+            font-size: 14px;
+        }
+        
+        .track-details {
+            flex: 1;
+        }
+        
+        .track-title {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .track-artist {
+            font-size: 12px;
+            color: var(--spotify-light-gray);
+        }
+        
+        .track-duration {
+            color: var(--spotify-light-gray);
+            font-size: 14px;
+        }
+        
+        .upload-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .upload-btn {
+            background-color: var(--spotify-green);
+            color: var(--spotify-white);
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        input[type="file"] {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <h1>🎵 Курсовой плеер</h1>
-    
-    <div id="player">
-        <audio id="audio" controls></audio>
-        <input type="range" id="progress-bar" min="0" max="100" value="0">
-        <div id="now-playing">Треки не выбраны</div>
+    <div class="container">
+        <div class="player-header">
+            <div class="player-title">Music Player</div>
+        </div>
+        
+        <div class="now-playing">
+            <img id="album-art" src="/static/default-album.png" class="album-art" alt="Album Art">
+            <div class="track-info">
+                <div id="track-name" class="track-name">Not Playing</div>
+                <div id="artist-name" class="artist-name">—</div>
+            </div>
+            
+            <div class="progress-container">
+                <input type="range" id="progress-bar" class="progress-bar" min="0" max="100" value="0">
+                <div class="time-info">
+                    <span id="current-time">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="control-btn">⏮</button>
+                <button id="play-btn" class="play-btn">▶</button>
+                <button class="control-btn">⏭</button>
+            </div>
+        </div>
+        
+        <div class="track-list" id="track-list">
+            <!-- Треки будут загружаться здесь -->
+        </div>
+        
+        <div class="upload-section">
+            <input type="file" id="file-input" accept="audio/*">
+            <button id="upload-btn" class="upload-btn">
+                <span>📤 Upload Track</span>
+            </button>
+        </div>
     </div>
-
-    <div id="player-controls">
-        <button id="play-btn">▶️ Играть</button>
-        <button id="upload-btn">📤 Загрузить</button>
-    </div>
-
-    <ul id="track-list"></ul>
-    <input type="file" id="file-input" accept="audio/*" style="display: none;">
 
     <script src="/static/player.js"></script>
 </body>
