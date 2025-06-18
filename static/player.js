@@ -1,42 +1,19 @@
 const tg = window.Telegram.WebApp;
-const audio = document.getElementById('audio');
+const audio = new Audio();
 const trackList = document.getElementById('track-list');
 const progressBar = document.getElementById('progress-bar');
 const playBtn = document.getElementById('play-btn');
+const currentTimeEl = document.getElementById('current-time');
+const durationEl = document.getElementById('duration');
+const trackNameEl = document.getElementById('track-name');
+const artistNameEl = document.getElementById('artist-name');
+const albumArtEl = document.getElementById('album-art');
 const uploadBtn = document.getElementById('upload-btn');
 const fileInput = document.getElementById('file-input');
 
 let currentTrack = null;
+let isPlaying = false;
 
-async function loadTracks() {
-    try {
-        const response = await fetch('/tracks');
-        const { tracks } = await response.json();
-        
-        trackList.innerHTML = '';
-        tracks.forEach(track => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <strong>${track.title}</strong>
-                <br>
-                <small>${track.artist} • ${formatTime(track.duration)}</small>
-            `;
-            li.onclick = () => playTrack(track.path);
-            trackList.appendChild(li);
-        });
-    } catch (error) {
-        console.error('Failed to load tracks:', error);
-    }
-}
-
-function playTrack(filename) {
-    currentTrack = filename;
-    audio.src = `/play/${filename}`;
-    audio.play();
-    playBtn.textContent = '⏸ Pause';
-    document.getElementById('now-playing').textContent = 
-        `Now playing: ${filename.split('.')[0]}`;
-}
 
 function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
@@ -44,8 +21,62 @@ function formatTime(seconds) {
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 }
 
-audio.addEventListener('timeupdate', () => {
+
+function updateProgress() {
     progressBar.value = (audio.currentTime / audio.duration) * 100;
+    currentTimeEl.textContent = formatTime(audio.currentTime);
+}
+
+
+async function loadTracks() {
+    try {
+        const response = await fetch('/tracks');
+        const { tracks } = await response.json();
+        
+        trackList.innerHTML = '';
+        tracks.forEach((track, index) => {
+            const trackItem = document.createElement('div');
+            trackItem.className = 'track-item';
+            trackItem.innerHTML = `
+                <div class="track-number">${index + 1}</div>
+                <div class="track-details">
+                    <div class="track-title">${track.title}</div>
+                    <div class="track-artist">${track.artist}</div>
+                </div>
+                <div class="track-duration">${formatTime(track.duration)}</div>
+            `;
+            trackItem.addEventListener('click', () => playTrack(track));
+            trackList.appendChild(trackItem);
+        });
+    } catch (error) {
+        console.error('Failed to load tracks:', error);
+    }
+}
+
+
+function playTrack(track) {
+    currentTrack = track;
+    audio.src = `/play/${track.path}`;
+    audio.play();
+    isPlaying = true;
+    playBtn.innerHTML = '❚❚';
+    
+    
+    trackNameEl.textContent = track.title;
+    artistNameEl.textContent = track.artist;
+    albumArtEl.src = track.albumArt || '/static/default-album.png';
+    
+    
+    audio.onloadedmetadata = () => {
+        durationEl.textContent = formatTime(audio.duration);
+    };
+}
+
+
+audio.addEventListener('timeupdate', updateProgress);
+audio.addEventListener('ended', () => {
+    isPlaying = false;
+    playBtn.innerHTML = '▶';
 });
 
 progressBar.addEventListener('input', () => {
@@ -53,12 +84,15 @@ progressBar.addEventListener('input', () => {
 });
 
 playBtn.addEventListener('click', () => {
-    if (audio.paused) {
-        audio.play();
-        playBtn.textContent = '⏸ Pause';
-    } else {
-        audio.pause();
-        playBtn.textContent = '▶️ Play';
+    if (currentTrack) {
+        if (isPlaying) {
+            audio.pause();
+            playBtn.innerHTML = '▶';
+        } else {
+            audio.play();
+            playBtn.innerHTML = '❚❚';
+        }
+        isPlaying = !isPlaying;
     }
 });
 
@@ -84,5 +118,7 @@ fileInput.addEventListener('change', async (e) => {
     }
 });
 
+
 tg.expand();
+tg.setHeaderColor('#191414'); 
 loadTracks();
