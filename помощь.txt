@@ -1,0 +1,6 @@
+Для NGROK - ngrok http 5000
+
+Для Localtunnel -
+lt --port 5000
+
+npm install -g localtunnel
