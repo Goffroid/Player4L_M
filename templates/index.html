@@ -31,6 +31,41 @@
             padding-bottom: 20px;
         }
         
+        .search-container {
+            display: flex;
+            margin: 15px 0;
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.1);
+    }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            background: transparent;
+            color: white;
+            font-family: 'Circular', sans-serif;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: var(--spotify-light-gray);
+        }
+
+        .search-btn {
+            background: transparent;
+            border: none;
+            color: var(--spotify-light-gray);
+            padding: 0 15px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .search-btn:hover {
+            color: var(--spotify-green);
+        }
+        
         .container {
             max-width: 480px;
             margin: 0 auto;

@@ -69,3 +69,16 @@ def get_tracks():
     tracks = storage.get_all_tracks()
     sorted_tracks = sorted(tracks, key=lambda x: x['title'])
     return jsonify({"tracks": sorted_tracks})
+
+@app.route('/search')
+def search_tracks():
+    query = request.args.get('q', '').lower()
+    if not query:
+        return jsonify({"results": storage.get_all_tracks()})
+    
+    results = [
+        track for track in storage.get_all_tracks()
+        if query in track['title'].lower() or 
+           query in track['artist'].lower()
+    ]
+    return jsonify({"results": results})
