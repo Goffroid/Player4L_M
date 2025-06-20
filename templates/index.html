@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotify-like Music Player</title>
+    <title>Ал-ля Спотифай</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="icon" href="/static/spotify-icon.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Circular:wght@400;500;700&display=swap" rel="stylesheet">
@@ -402,11 +402,11 @@
 <body>
     <div class="container">
         <div class="player-header">
-            <div class="player-title">Music Player</div>
+            <div class="player-title">Плеер для Зачёта</div>
         </div>
         
         <div class="search-container">
-            <input type="text" id="search-input" placeholder="Search tracks..." class="search-input">
+            <input type="text" id="search-input" placeholder="Поиск..." class="search-input">
             <button id="search-btn" class="search-btn">🔍</button>
         </div>
         
@@ -416,7 +416,7 @@
             </div>
             
             <div class="track-info">
-                <div id="track-name" class="track-name">Not Playing</div>
+                <div id="track-name" class="track-name">Ничего не играет</div>
                 <div id="artist-name" class="artist-name">—</div>
             </div>
             
@@ -437,18 +437,18 @@
         
         <div class="track-list">
             <div class="track-list-header">
-                <span>Track List</span>
-                <span id="tracks-count">0 tracks</span>
+                <span>Список Треков</span>
+                <span id="tracks-count">0 треков</span>
             </div>
             <div id="track-list">
-                <div class="empty-message">Loading tracks...</div>
+                <div class="empty-message">Загрузка треков...</div>
             </div>
         </div>
         
         <div class="upload-section">
             <input type="file" id="file-input" accept="audio/*">
             <button id="upload-btn" class="upload-btn">
-                <span>Upload Track</span>
+                <span>Загрузить трек</span>
             </button>
         </div>
     </div>
