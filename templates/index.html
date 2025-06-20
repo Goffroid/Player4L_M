@@ -31,41 +31,6 @@
             padding-bottom: 20px;
         }
         
-        .search-container {
-            display: flex;
-            margin: 15px 0;
-            border-radius: 20px;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.1);
-    }
-
-        .search-input {
-            flex: 1;
-            padding: 12px 15px;
-            border: none;
-            background: transparent;
-            color: white;
-            font-family: 'Circular', sans-serif;
-            outline: none;
-        }
-
-        .search-input::placeholder {
-            color: var(--spotify-light-gray);
-        }
-
-        .search-btn {
-            background: transparent;
-            border: none;
-            color: var(--spotify-light-gray);
-            padding: 0 15px;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .search-btn:hover {
-            color: var(--spotify-green);
-        }
-        
         .container {
             max-width: 480px;
             margin: 0 auto;
@@ -85,6 +50,41 @@
             font-weight: 700;
             color: var(--spotify-white);
             letter-spacing: -0.5px;
+        }
+        
+        .search-container {
+            display: flex;
+            margin: 15px 0;
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            background: transparent;
+            color: white;
+            font-family: 'Circular', sans-serif;
+            outline: none;
+        }
+        
+        .search-input::placeholder {
+            color: var(--spotify-light-gray);
+        }
+        
+        .search-btn {
+            background: transparent;
+            border: none;
+            color: var(--spotify-light-gray);
+            padding: 0 15px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .search-btn:hover {
+            color: var(--spotify-green);
         }
         
         .now-playing {
@@ -353,6 +353,45 @@
             display: none;
         }
         
+        .empty-message {
+            text-align: center;
+            padding: 30px;
+            color: var(--spotify-light-gray);
+            font-size: 16px;
+        }
+        
+        .search-highlight {
+            background-color: rgba(29, 185, 84, 0.3);
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+        
+        .status-message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 500;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .status-message.success {
+            background-color: var(--spotify-green);
+            color: white;
+        }
+        
+        .status-message.error {
+            background-color: #ff3333;
+            color: white;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; bottom: 0; }
+            to { opacity: 1; bottom: 20px; }
+        }
         
         @keyframes rotate {
             from { transform: rotate(0deg); }
@@ -364,6 +403,11 @@
     <div class="container">
         <div class="player-header">
             <div class="player-title">Music Player</div>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search tracks..." class="search-input">
+            <button id="search-btn" class="search-btn">🔍</button>
         </div>
         
         <div class="now-playing">
@@ -397,6 +441,7 @@
                 <span id="tracks-count">0 tracks</span>
             </div>
             <div id="track-list">
+                <div class="empty-message">Loading tracks...</div>
             </div>
         </div>
         
@@ -406,11 +451,6 @@
                 <span>Upload Track</span>
             </button>
         </div>
-    </div>
-    <!-- Добавляем после .player-header -->
-    <div class="search-container">
-        <input type="text" id="search-input" placeholder="Search tracks..." class="search-input">
-        <button id="search-btn" class="search-btn">🔍</button>
     </div>
 
     <script src="/static/player.js"></script>
